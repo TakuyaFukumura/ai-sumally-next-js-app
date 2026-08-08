@@ -33,4 +33,16 @@ describe('isSameOriginRequest', () => {
 
         expect(isSameOriginRequest(request)).toBe(true);
     });
+
+    it('Refererヘッダーがクロスオリジンならfalseを返す', () => {
+        const request = createRequestMock('http://localhost:3000/api/summaries', {
+            referer: 'http://malicious.example/summaries',
+        });
+        expect(isSameOriginRequest(request)).toBe(false);
+    });
+
+    it('OriginとRefererがない場合はfalseを返す', () => {
+        const request = createRequestMock('http://localhost:3000/api/summaries', {});
+        expect(isSameOriginRequest(request)).toBe(false);
+    });
 });

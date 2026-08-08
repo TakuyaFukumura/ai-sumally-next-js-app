@@ -1,5 +1,6 @@
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3';
+const OLLAMA_TIMEOUT_MS = 60_000;
 
 interface OllamaResponse {
     response?: string;
@@ -24,6 +25,7 @@ export async function generateSummaryWithOllama(originalText: string, instructio
         headers: {
             'Content-Type': 'application/json',
         },
+        signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
         body: JSON.stringify({
             model: OLLAMA_MODEL,
             prompt: buildSummaryPrompt(originalText, instruction),

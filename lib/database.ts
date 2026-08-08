@@ -42,12 +42,21 @@ interface UpdateSummaryInput {
 }
 
 function toIsoString(value: string): string {
-    if (value.includes('T')) {
+    const trimmed = value.trim();
+    const parsedValue = new Date(trimmed);
+    if (!Number.isNaN(parsedValue.getTime()) && (trimmed.includes('T') || trimmed.endsWith('Z'))) {
+        return parsedValue.toISOString();
+    }
+
+    const normalized = trimmed.includes(' ') ? trimmed.replace(/ /g, 'T') : trimmed;
+    const withTimezone = normalized.endsWith('Z') ? normalized : `${normalized}Z`;
+    const parsedNormalizedValue = new Date(withTimezone);
+
+    if (Number.isNaN(parsedNormalizedValue.getTime())) {
         return value;
     }
 
-    const normalized = `${value.replace(' ', 'T')}Z`;
-    return new Date(normalized).toISOString();
+    return parsedNormalizedValue.toISOString();
 }
 
 function mapSummaryRow(row: SummaryRow): Summary {
