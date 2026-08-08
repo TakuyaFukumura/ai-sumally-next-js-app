@@ -25,7 +25,7 @@
 └───────────────┬─────────────────────┘
                 │ HTTP
 ┌───────────────▼─────────────────────┐
-│     Next.js バックエンド (API Routes) │
+│   Next.js バックエンド (Route Handlers) │
 └──────┬────────────────────┬──────────┘
        │                    │
 ┌──────▼───────┐    ┌───────▼────────┐
@@ -40,7 +40,7 @@
 | 項目 | 技術 |
 |------|------|
 | フロントエンド | Next.js (App Router), React, TypeScript, Tailwind CSS |
-| バックエンド | Next.js API Routes |
+| バックエンド | Next.js Route Handlers |
 | データベース | SQLite (better-sqlite3) |
 | AI推論 | Ollama (ローカル起動) |
 | テスト | Jest, React Testing Library |
@@ -90,7 +90,7 @@
 | 対応ブラウザ | Chrome最新版、Firefox最新版 |
 | レスポンス | 要約処理中はローディング表示を行う |
 | エラー処理 | Ollama未起動やタイムアウト時はユーザーにエラーメッセージを表示する |
-| セキュリティ | APIルートは同一オリジンからのリクエストのみ受け付ける想定 |
+| セキュリティ | ローカルPCでの単一ユーザー利用を前提とし、CORSは設定しない。書き込み系APIでは Origin / Referer 検証またはCSRF対策を実装する |
 
 ---
 
@@ -107,8 +107,8 @@
 | `summary_text` | TEXT NOT NULL | 要約文 |
 | `instruction` | TEXT | 再生成時の指示文（任意） |
 | `model` | TEXT NOT NULL | 使用したOllamaモデル名 |
-| `created_at` | TEXT NOT NULL | 作成日時（ISO 8601形式） |
-| `updated_at` | TEXT NOT NULL | 最終更新日時（ISO 8601形式） |
+| `created_at` | DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP | 作成日時 |
+| `updated_at` | DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP | 最終更新日時（更新時に CURRENT_TIMESTAMP を設定） |
 
 ---
 
