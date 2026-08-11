@@ -1,12 +1,12 @@
-import type {Metadata} from "next";
-import "./globals.css";
-import {DarkModeProvider} from "./components/DarkModeProvider";
-import Header from "./components/Header";
-import React from "react";
+import type {Metadata} from 'next';
+import './globals.css';
+import {DarkModeProvider} from './components/DarkModeProvider';
+import Header from './components/Header';
+import React from 'react';
 
 export const metadata: Metadata = {
-    title: "基本Next.jsアプリ",
-    description: "SQLiteからメッセージを取得するシンプルなNext.jsアプリケーション",
+    title: 'AI要約アプリ',
+    description: 'OllamaとSQLiteを利用したローカル向けAI要約アプリケーション',
 };
 
 export default function RootLayout({

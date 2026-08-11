@@ -190,5 +190,48 @@ describe('Database Functions', () => {
             const deleteResult = db.prepare('DELETE FROM messages WHERE content = ?').run('Updated CRUD Message');
             expect(deleteResult.changes).toBe(1);
         });
+
+        it('summariesテーブルに要約を保存して取得できる', async () => {
+            const {createSummary, listSummaries} = await import('../../lib/database');
+
+            createSummary({
+                originalText: 'これはテスト用の原文です。',
+                summaryText: 'テスト用要約',
+                instruction: null,
+                model: 'llama3',
+            });
+
+            const summaries = listSummaries();
+            expect(summaries).toHaveLength(1);
+            expect(summaries[0].originalText).toBe('これはテスト用の原文です。');
+            expect(summaries[0].summaryText).toBe('テスト用要約');
+            expect(summaries[0].instruction).toBeNull();
+            expect(summaries[0].model).toBe('llama3');
+            expect(summaries[0].createdAt).toContain('T');
+            expect(summaries[0].updatedAt).toContain('T');
+        });
+
+        it('既存の要約を再生成結果で更新できる', async () => {
+            const {createSummary, updateSummaryById} = await import('../../lib/database');
+
+            const created = createSummary({
+                originalText: '元の文章',
+                summaryText: '最初の要約',
+                instruction: null,
+                model: 'llama3',
+            });
+
+            const updated = updateSummaryById(created.id, {
+                summaryText: '更新後の要約',
+                instruction: '箇条書きで要約してください',
+                model: 'llama3',
+            });
+
+            expect(updated).toBeDefined();
+            expect(updated?.id).toBe(created.id);
+            expect(updated?.originalText).toBe('元の文章');
+            expect(updated?.summaryText).toBe('更新後の要約');
+            expect(updated?.instruction).toBe('箇条書きで要約してください');
+        });
     });
 });
